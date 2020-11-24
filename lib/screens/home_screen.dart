@@ -48,9 +48,7 @@ class _HomeScreenState extends State<HomeScreen>
             
               popular(),
             
-            Container(
-              color: Colors.deepOrange,
-            ),
+              favorites(),
           ],
           controller: _tabController,
         ),
