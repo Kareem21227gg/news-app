@@ -17,11 +17,13 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _tabController = TabController(initialIndex: 0, length: 3, vsync: this);
   }
- @override
+
+  @override
   void dispose() {
-   _tabController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen>
         centerTitle: false,
         actions: <Widget>[
           IconButton(icon: Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: Icon(Icons.more_vert), onPressed: () {}),
+          _popupMenuButton(context),
         ],
         bottom: TabBar(
           indicatorColor: Colors.white,
@@ -46,16 +48,33 @@ class _HomeScreenState extends State<HomeScreen>
       body: Center(
         child: TabBarView(
           children: [
-            
-              whatSNew(),
-            
-              popular(),
-            
-              favorites(),
+            whatSNew(),
+            popular(),
+            favorites(),
           ],
           controller: _tabController,
         ),
       ),
     );
-  }
+  }_popupMenuButton(BuildContext context) {
+  return (PopupMenuButton<mypopitem>(
+     
+      itemBuilder: (context) => <PopupMenuEntry<mypopitem>>[
+         const PopupMenuItem<mypopitem>(
+      value: mypopitem.task1,
+      child: Text('Working a lot task1'),
+    ),
+    const PopupMenuItem<mypopitem>(
+      value: mypopitem.task2,
+      child: Text('Being a lot task2'),
+    ),
+    const PopupMenuItem<mypopitem>(
+      value: mypopitem.task3,
+      child: Text('Being a self-starter'),
+    ),
+      ]));
 }
+
+}
+
+enum mypopitem { task1, task2, task3 }
