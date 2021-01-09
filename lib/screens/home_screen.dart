@@ -4,6 +4,7 @@ import 'page_view/popular.dart';
 import 'page_view/what_s_new.dart';
 import 'package:flutter003/shaed_ui/navigation_drawer.dart';
 
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();

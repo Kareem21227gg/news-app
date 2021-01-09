@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter003/api/post_api.dart';
+import 'package:flutter003/model/post.dart';
+import 'package:http/http.dart' as http;
 class whatSNew extends StatefulWidget {
   @override
   _whatSNewState createState() => _whatSNewState();
@@ -58,7 +60,7 @@ class _whatSNewState extends State<whatSNew> {
     ));
   }
 
- Widget drawRow() {
+  Widget drawRow(Post post) {
     return Padding(
       padding:
           const EdgeInsets.only(top: 12.0, left: 8.0, right: 8.0, bottom: 12.0),
@@ -70,7 +72,7 @@ class _whatSNewState extends State<whatSNew> {
             height: MediaQuery.of(context).size.height * 0.12,
             width: MediaQuery.of(context).size.width * 0.27,
             child: Container(
-              color: Colors.grey.shade800,
+               child: Image.network(post.imageUrl, fit:BoxFit.cover),
             ),
           ),
           Expanded(
@@ -84,15 +86,16 @@ class _whatSNewState extends State<whatSNew> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: Text(
-                      "The World Global Warming Annual Summit",
+                      post.title,
                       style: TextStyle(
-                          fontSize: 18.0, fontWeight: FontWeight.bold),
+                          fontSize: 18.0, fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ),
                   Row(
                     children: [
                       Text(
-                        "Michael Adams             ",
+                        "             ",
                         style: TextStyle(color: Colors.grey.shade600),
                       ),
                       Icon(
@@ -127,14 +130,22 @@ class _whatSNewState extends State<whatSNew> {
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  drawRow(),
-                  _drawLine(),
-                  drawRow(),
-                  _drawLine(),
-                  drawRow(),
-                ],
+              child: FutureBuilder(
+                future: PostApi.getAllPosts(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  Post post = snapshot.data[0];
+                  Post post1 = snapshot.data[1];
+                  Post post2 = snapshot.data[2];
+                  return Column(
+                    children: [
+                      drawRow(post),
+                      _drawLine(),
+                      drawRow(post1),
+                      _drawLine(),
+                      drawRow(post2),
+                    ],
+                  );
+                },
               ),
             ),
           ),

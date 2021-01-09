@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'screens/onbording.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/home_screen.dart';
 import 'utilities/Stheme.dart';
 
 void main() async {
+   
   Widget _screen = OnBoarding();
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -15,7 +17,6 @@ void main() async {
   } else {
     _screen = HomeScreen();
   }
-
   runApp(Flutter003(_screen));
 }
 
@@ -24,6 +25,7 @@ class Flutter003 extends StatelessWidget {
   Flutter003(this._screen);
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: MyTheme.themeType,
