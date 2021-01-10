@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter003/api/post_api.dart';
+import 'package:flutter003/api/user_api.dart';
 import 'package:flutter003/model/post.dart';
+import 'package:flutter003/model/user.dart';
 import 'package:http/http.dart' as http;
+
 class whatSNew extends StatefulWidget {
   @override
   _whatSNewState createState() => _whatSNewState();
@@ -61,62 +64,103 @@ class _whatSNewState extends State<whatSNew> {
   }
 
   Widget drawRow(Post post) {
-    return Padding(
-      padding:
-          const EdgeInsets.only(top: 12.0, left: 8.0, right: 8.0, bottom: 12.0),
-      child: (Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.12,
-            width: MediaQuery.of(context).size.width * 0.27,
-            child: Container(
-               child: Image.network(post.imageUrl, fit:BoxFit.cover),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                bottom: 16.0,
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Text(
-                      post.title,
-                      style: TextStyle(
-                          fontSize: 18.0, fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ),
-                  Row(
+    return FutureBuilder(
+      future: UserApi.getAllUsers(),
+      builder: (context, AsyncSnapshot<List<User>> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              // ignore: todo
+              //TODO:handel the error
+            } else {
+              if (snapshot.data.length >= 1) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                      top: 6.0, left: 8.0, right: 8.0, bottom: 6.0),
+                  child: (Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "             ",
-                        style: TextStyle(color: Colors.grey.shade600),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.12,
+                        width: MediaQuery.of(context).size.width * 0.27,
+                        child: Container(
+                          child: Image.network(
+                              snapshot.data[post.userId - 1].imageUrl,
+                              fit: BoxFit.cover),
+                        ),
                       ),
-                      Icon(
-                        Icons.access_time,
-                        size: 14.0,
-                        color: Colors.grey.shade600,
-                      ),
-                      Text(
-                        "15 min",
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16.0,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 80,
+                                child: Text(
+                                  post.title,
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    (snapshot.data[post.userId - 1].name
+                                                .length >=
+                                            17)
+                                        ? snapshot.data[post.userId].name
+                                            .substring(0, 16)
+                                        : snapshot.data[post.userId].name,
+                                    style:
+                                        TextStyle(color: Colors.grey.shade600),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.access_time,
+                                        size: 14.0,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      Text(
+                                        "15 min",
+                                        style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      )),
+                  )),
+                );
+              }
+            }
+            break;
+          case ConnectionState.none:
+            // ignore: todo
+            //TODO:Handel This Error
+            break;
+          case ConnectionState.active:
+            return _loading();
+            break;
+          case ConnectionState.waiting:
+            return _loading();
+            break;
+        }
+      },
     );
   }
 
@@ -132,19 +176,43 @@ class _whatSNewState extends State<whatSNew> {
               padding: const EdgeInsets.all(8.0),
               child: FutureBuilder(
                 future: PostApi.getAllPosts(),
-                builder: (context, AsyncSnapshot snapshot) {
-                  Post post = snapshot.data[0];
-                  Post post1 = snapshot.data[1];
-                  Post post2 = snapshot.data[2];
-                  return Column(
-                    children: [
-                      drawRow(post),
-                      _drawLine(),
-                      drawRow(post1),
-                      _drawLine(),
-                      drawRow(post2),
-                    ],
-                  );
+                // ignore: missing_return
+                builder: (context, AsyncSnapshot<List<Post>> snapshot) {
+                  List<User> user;
+
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.done:
+                      if (snapshot.hasError) {
+                        // ignore: todo
+                        //TODO:handel the error
+                      } else {
+                        if (snapshot.data.length >= 6) {
+                          Post post = snapshot.data[3];
+                          Post post1 = snapshot.data[4];
+                          Post post2 = snapshot.data[5];
+                          return Column(
+                            children: [
+                              drawRow(post),
+                              _drawLine(),
+                              drawRow(post1),
+                              _drawLine(),
+                              drawRow(post2),
+                            ],
+                          );
+                        }
+                      }
+                      break;
+                    case ConnectionState.none:
+                      // ignore: todo
+                      //TODO:Handel This Error
+                      break;
+                    case ConnectionState.active:
+                      return _loading();
+                      break;
+                    case ConnectionState.waiting:
+                      return _loading();
+                      break;
+                  }
                 },
               ),
             ),
@@ -216,7 +284,6 @@ class _whatSNewState extends State<whatSNew> {
   Widget _drawTitle(String title) {
     return (Padding(
       padding: const EdgeInsets.only(
-        bottom: 10.0,
         top: 16.0,
         left: 24.0,
       ),
@@ -231,4 +298,16 @@ class _whatSNewState extends State<whatSNew> {
       ),
     ));
   }
+
+  Widget _loading() {
+    return Container(
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+          strokeWidth: 3,
+        ),
+      ),
+    );
+  }
 }
+/**/

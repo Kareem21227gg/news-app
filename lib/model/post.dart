@@ -1,4 +1,5 @@
 class Post {
+  String owner;
   int userId;
   int id;
   String title;
@@ -6,6 +7,7 @@ class Post {
   String imageUrl;
   Post.p();
   Post({
+    this.owner,
     this.userId,
     this.id,
     this.title,

@@ -6,7 +6,7 @@ import 'dart:async';
 
 class PostApi{
    static Future<List<Post>> getAllPosts() async {
-    var response = await http.get(allPostsApi);
+    var response = await  http.get(allPostsApi);
     var responseImage = await http.get(imagesBrazel);
     List<Post>  posts = List<Post>();
     Post post = Post.p();
@@ -14,17 +14,19 @@ class PostApi{
        
       var jsonData = jsonDecode(response.body);
      
-      for (int i =0;i<10;i++){
+      for (int i =0;i<6;i++){
+        
         var item= jsonData[i];
-        responseImage = await http.get(imagesBrazel);
          var json=  jsonDecode(responseImage.body);
         post=Post(body: item['body'],
         id: item['id'],
         title: item['title'],
         userId: item['userId'],
-        imageUrl: json['file']);
-        
+        imageUrl: json['file'],
+        owner: json['owner']);
+        print(item['userId']);
         posts.add(post);
+        responseImage = await http.get(imagesBrazel);
         
       } 
     }

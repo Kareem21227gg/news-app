@@ -28,6 +28,7 @@ class Flutter003 extends StatelessWidget {
     
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      color:Colors.red,
       theme: MyTheme.themeType,
       home: this._screen,
     );

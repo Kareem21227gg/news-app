@@ -17,15 +17,15 @@ class UserApi {
       var jsonData = jsonDecode(response.body);
       
       for (int i = 0; i < 10; i++) {
-         responseImage = await http.get(imagesGirl);
+        
         var json = jsonDecode(responseImage.body);
         
         var item = jsonData[i];
         
         user =  User(item['id'], item['name'], item['email'], json['file'] );
         users.add(user);
-        
-        
+        print(user.name);
+         responseImage = await http.get(imagesGirl);
       }
     }
     return users;
